@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { CheckSquare, Loader2 } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,40 +39,58 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] relative selection:bg-indigo-100 selection:text-indigo-900">
-      {/* Subtle Dot Pattern Background */}
-      <div className="absolute inset-0 z-0 h-full w-full bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] opacity-60"></div>
-      
-      <div className="w-full max-w-[400px] z-10 px-4 sm:px-0">
-        <div className="mb-8 text-center">
-          <div className="mx-auto w-12 h-12 bg-white border border-slate-200 shadow-sm rounded-xl flex items-center justify-center mb-5">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-indigo-600">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-            </svg>
+    <div className="relative flex min-h-screen items-center justify-center px-4 selection:bg-accent selection:text-accent-foreground">
+      <div className="z-10 grid w-full max-w-5xl overflow-hidden rounded-lg border border-border bg-card/90 shadow-2xl backdrop-blur-xl md:grid-cols-[1fr_0.85fr]">
+        <section className="hidden border-r border-border bg-muted/35 p-10 md:flex md:flex-col md:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <CheckSquare className="size-5" />
+            </div>
+            <span className="text-lg font-semibold tracking-tight">TeamFlow</span>
           </div>
-          <h2 className="text-2xl font-semibold tracking-tight text-slate-900">Sign in to your account</h2>
-          <p className="text-sm text-slate-500 mt-2">
-            Welcome back. Please enter your details.
-          </p>
-        </div>
-
-        <div className="bg-white/70 backdrop-blur-md p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100/50 rounded-2xl">
+          <div>
+            <h1 className="max-w-sm text-4xl font-semibold tracking-tight text-foreground">
+              Small teams deserve quieter project software.
+            </h1>
+            <p className="mt-4 max-w-sm text-sm leading-6 text-muted-foreground">
+              Plan projects, assign ownership, and keep the board moving without the visual clutter.
+            </p>
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            {[72, 44, 88, 58, 66, 36].map((height, index) => (
+              <div key={index} className="h-24 rounded-lg bg-background/70 p-2">
+                <div className="mt-auto rounded-md bg-primary/80" style={{ height: `${height}%` }} />
+              </div>
+            ))}
+          </div>
+        </section>
+        
+        <section className="p-7 sm:p-10">
+          <div className="mb-8 md:hidden">
+            <div className="mb-5 flex size-11 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <CheckSquare className="size-5" />
+            </div>
+          </div>
+          <div className="mb-8">
+            <h2 className="text-3xl font-semibold tracking-tight text-foreground">Sign in</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Welcome back. Enter your details to continue.</p>
+          </div>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium text-slate-700">Email</Label>
+              <Label htmlFor="email" className="text-sm font-medium text-foreground">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full h-11 bg-white border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-sm transition-all"
+                className="h-11 w-full rounded-lg border-border bg-background text-sm shadow-sm transition-all"
               />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-sm font-medium text-slate-700">Password</Label>
-                <Link href="#" className="text-xs font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                <Label htmlFor="password" className="text-sm font-medium text-foreground">Password</Label>
+                <Link href="#" className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground">
                   Forgot password?
                 </Link>
               </div>
@@ -81,28 +100,29 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full h-11 bg-white border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm text-sm transition-all"
+                className="h-11 w-full rounded-lg border-border bg-background text-sm shadow-sm transition-all"
               />
             </div>
             
             <Button 
               type="submit" 
-              className="w-full h-11 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium shadow-sm shadow-indigo-600/20 transition-all active:scale-[0.98]"
+              className="h-11 w-full rounded-lg bg-primary font-medium text-primary-foreground shadow-sm transition-all active:scale-[0.98]"
               disabled={loading}
             >
+              {loading ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
               {loading ? "Signing in..." : "Sign in"}
             </Button>
           </form>
           
-          <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-            <p className="text-sm text-slate-500">
-              Don't have an account?{" "}
-              <Link href="/signup" className="font-medium text-slate-900 hover:text-indigo-600 transition-colors">
+          <div className="mt-8 border-t border-border pt-6 text-center">
+            <p className="text-sm text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <Link href="/signup" className="font-medium text-foreground transition-colors hover:text-muted-foreground">
                 Sign up
               </Link>
             </p>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

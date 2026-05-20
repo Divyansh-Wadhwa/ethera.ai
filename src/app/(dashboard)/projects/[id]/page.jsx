@@ -52,6 +52,7 @@ export default function ProjectDetailsPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProject();
   }, [params.id]);
 
@@ -90,7 +91,7 @@ export default function ProjectDetailsPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full min-h-[400px]">
-        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
@@ -112,21 +113,21 @@ export default function ProjectDetailsPage() {
       case 'HIGH': return 'bg-red-100 text-red-700 border-red-200';
       case 'MEDIUM': return 'bg-amber-100 text-amber-700 border-amber-200';
       case 'LOW': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-      default: return 'bg-slate-100 text-slate-700';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500 pb-20">
+    <div className="mx-auto max-w-7xl space-y-6 animate-in fade-in duration-500 pb-20">
       <div className="flex flex-col gap-2">
-        <Link href="/projects" className="text-sm font-medium text-slate-500 hover:text-indigo-600 flex items-center w-fit transition-colors">
-          <ArrowLeft className="w-4 h-4 mr-1" />
+        <Link href="/projects" className="flex w-fit items-center text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+          <ArrowLeft className="mr-1 size-4" />
           Back to Projects
         </Link>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-2">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">{project.name}</h1>
+              <h1 className="text-4xl font-semibold tracking-tight text-foreground">{project.name}</h1>
               {isAdmin ? (
                 <Select 
                   value={project.status || "ACTIVE"} 
@@ -146,27 +147,27 @@ export default function ProjectDetailsPage() {
                     }
                   }}
                 >
-                  <SelectTrigger className={`h-7 px-2 text-[10px] uppercase font-bold tracking-wider rounded-md border-0 w-[110px] ${project.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700'}`}>
+                  <SelectTrigger className={`h-7 w-[110px] rounded-md border px-2 text-[10px] font-bold uppercase tracking-wider ${project.status === 'COMPLETED' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-border bg-muted text-muted-foreground'}`}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="ACTIVE" className="text-xs font-medium text-blue-700">Active</SelectItem>
+                    <SelectItem value="ACTIVE" className="text-xs font-medium">Active</SelectItem>
                     <SelectItem value="COMPLETED" className="text-xs font-medium text-emerald-700">Completed</SelectItem>
                   </SelectContent>
                 </Select>
               ) : (
-                <Badge className={project.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'bg-blue-100 text-blue-700 hover:bg-blue-100'}>
+                <Badge variant="outline" className={project.status === 'COMPLETED' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-border bg-muted text-muted-foreground'}>
                   {project.status || "ACTIVE"}
                 </Badge>
               )}
             </div>
-            <p className="text-slate-500 mt-1 max-w-2xl">{project.description}</p>
+            <p className="mt-2 max-w-2xl text-muted-foreground">{project.description || "No description provided."}</p>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="flex -space-x-2 mr-2">
               {project.members.map((member, i) => (
-                <div key={i} className="w-9 h-9 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 border-2 border-white flex items-center justify-center text-white text-xs font-bold shadow-sm" title={member.user.name + ` (${member.role})`}>
+                <div key={i} className="flex size-9 items-center justify-center rounded-full border-2 border-background bg-primary text-xs font-semibold text-primary-foreground shadow-sm" title={member.user.name + ` (${member.role})`}>
                   {member.user.name.charAt(0)}
                 </div>
               ))}
@@ -176,15 +177,15 @@ export default function ProjectDetailsPage() {
               <Dialog>
                 <DialogTrigger 
                   render={
-                    <Button variant="outline" className="rounded-xl shadow-sm transition-all active:scale-95 bg-white border-slate-200">
-                      <Users className="w-4 h-4 mr-1.5" />
+                    <Button variant="outline" className="rounded-lg bg-card shadow-sm transition-all active:scale-95">
+                      <Users className="mr-1.5 size-4" />
                       Members
                     </Button>
                   }
                 />
-                <DialogContent className="sm:max-w-[500px] rounded-2xl p-6">
+                <DialogContent className="sm:max-w-[500px] rounded-lg p-6">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-slate-900">Manage Members</DialogTitle>
+                    <DialogTitle className="text-2xl font-semibold tracking-tight text-foreground">Manage Members</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-6 mt-4">
                     <form onSubmit={async (e) => {
@@ -211,32 +212,32 @@ export default function ProjectDetailsPage() {
                         toast.error("Error adding member");
                       }
                     }} className="flex gap-2">
-                      <Input name="email" type="email" placeholder="Email address to add..." className="rounded-xl flex-1" required />
-                      <Button type="submit" className="bg-slate-900 text-white rounded-xl">Add</Button>
+                      <Input name="email" type="email" placeholder="Email address to add..." className="flex-1 rounded-lg" required />
+                      <Button type="submit" className="rounded-lg bg-primary text-primary-foreground">Add</Button>
                     </form>
 
                     <div className="space-y-3">
-                      <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Current Team</h4>
+                      <h4 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">Current Team</h4>
                       {project.members.map(member => (
-                        <div key={member.user._id} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                        <div key={member.user._id} className="flex items-center justify-between rounded-lg border border-border bg-muted/45 p-3">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-xs font-bold">
+                            <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-xs font-semibold text-primary-foreground">
                               {member.user.name.charAt(0)}
                             </div>
                             <div>
-                              <p className="text-sm font-bold text-slate-900">{member.user.name}</p>
-                              <p className="text-xs text-slate-500">{member.user.email}</p>
+                              <p className="text-sm font-semibold text-foreground">{member.user.name}</p>
+                              <p className="text-xs text-muted-foreground">{member.user.email}</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-3">
-                            <Badge variant="outline" className={member.role === "ADMIN" ? "bg-purple-50 text-purple-700 border-purple-200" : "bg-slate-100 text-slate-600 border-slate-200"}>
+                            <Badge variant="outline" className={member.role === "ADMIN" ? "border-amber-200 bg-amber-50 text-amber-700" : "border-border bg-background text-muted-foreground"}>
                               {member.role}
                             </Badge>
                             {member.user._id !== session?.user?.id && (
                               <Button 
                                 variant="ghost" 
                                 size="icon" 
-                                className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                className="size-8 text-red-500 hover:bg-red-50 hover:text-red-700"
                                 onClick={async () => {
                                   try {
                                     const res = await fetch(`/api/projects/${params.id}/members?userId=${member.user._id}`, {
@@ -270,42 +271,42 @@ export default function ProjectDetailsPage() {
               <Dialog open={isTaskDialogOpen} onOpenChange={setIsTaskDialogOpen}>
                 <DialogTrigger 
                   render={
-                    <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md transition-all active:scale-95">
-                      <Plus className="w-5 h-5 mr-1.5" />
+                    <Button className="rounded-lg bg-primary text-primary-foreground shadow-sm transition-all active:scale-95">
+                      <Plus className="mr-1.5 size-4" />
                       New Task
                     </Button>
                   }
                 />
-                <DialogContent className="sm:max-w-[500px] rounded-2xl p-6">
+                <DialogContent className="sm:max-w-[500px] rounded-lg p-6">
                   <DialogHeader>
-                    <DialogTitle className="text-2xl font-bold text-slate-900">Create Task</DialogTitle>
+                    <DialogTitle className="text-2xl font-semibold tracking-tight text-foreground">Create Task</DialogTitle>
                   </DialogHeader>
                   <form onSubmit={handleCreateTask} className="space-y-5 mt-4">
                     <div className="space-y-2">
-                      <Label className="font-semibold text-slate-700">Task Title</Label>
+                      <Label className="font-medium text-foreground">Task Title</Label>
                       <Input
                         value={newTask.title}
                         onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                         placeholder="What needs to be done?"
                         required
-                        className="rounded-xl"
+                        className="rounded-lg"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="font-semibold text-slate-700">Description</Label>
+                      <Label className="font-medium text-foreground">Description</Label>
                       <Input
                         value={newTask.description}
                         onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
                         placeholder="Add more details..."
-                        className="rounded-xl"
+                        className="rounded-lg"
                       />
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label className="font-semibold text-slate-700">Status</Label>
+                        <Label className="font-medium text-foreground">Status</Label>
                         <Select value={newTask.status} onValueChange={(v) => setNewTask({...newTask, status: v})}>
-                          <SelectTrigger className="rounded-xl">
+                          <SelectTrigger className="rounded-lg">
                             <SelectValue placeholder="Status" />
                           </SelectTrigger>
                           <SelectContent>
@@ -317,9 +318,9 @@ export default function ProjectDetailsPage() {
                       </div>
                       
                       <div className="space-y-2">
-                        <Label className="font-semibold text-slate-700">Priority</Label>
+                        <Label className="font-medium text-foreground">Priority</Label>
                         <Select value={newTask.priority} onValueChange={(v) => setNewTask({...newTask, priority: v})}>
-                          <SelectTrigger className="rounded-xl">
+                          <SelectTrigger className="rounded-lg">
                             <SelectValue placeholder="Priority" />
                           </SelectTrigger>
                           <SelectContent>
@@ -332,9 +333,9 @@ export default function ProjectDetailsPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="font-semibold text-slate-700">Assign To</Label>
+                      <Label className="font-medium text-foreground">Assign To</Label>
                       <Select value={newTask.assigneeId} onValueChange={(v) => setNewTask({...newTask, assigneeId: v})}>
-                        <SelectTrigger className="rounded-xl">
+                        <SelectTrigger className="rounded-lg">
                           <SelectValue placeholder="Select member" />
                         </SelectTrigger>
                         <SelectContent>
@@ -348,7 +349,7 @@ export default function ProjectDetailsPage() {
                       </Select>
                     </div>
 
-                    <Button type="submit" disabled={creatingTask} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-6 mt-4">
+                    <Button type="submit" disabled={creatingTask} className="mt-4 h-11 w-full rounded-lg bg-primary text-primary-foreground">
                       {creatingTask ? "Creating..." : "Create Task"}
                     </Button>
                   </form>
@@ -359,34 +360,33 @@ export default function ProjectDetailsPage() {
         </div>
       </div>
 
-      {/* Kanban Board */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 overflow-x-auto pb-4">
+      <div className="mt-8 grid grid-cols-1 gap-3 overflow-x-auto pb-4 md:grid-cols-3">
         {[
-          { id: 'TODO', title: 'To Do', tasks: tasksByStatus.TODO, color: 'bg-slate-200 text-slate-700', border: 'border-slate-200' },
-          { id: 'IN_PROGRESS', title: 'In Progress', tasks: tasksByStatus.IN_PROGRESS, color: 'bg-indigo-100 text-indigo-700', border: 'border-indigo-100' },
-          { id: 'DONE', title: 'Done', tasks: tasksByStatus.DONE, color: 'bg-emerald-100 text-emerald-700', border: 'border-emerald-100' }
+          { id: 'TODO', title: 'To Do', tasks: tasksByStatus.TODO, color: 'bg-muted text-muted-foreground' },
+          { id: 'IN_PROGRESS', title: 'In Progress', tasks: tasksByStatus.IN_PROGRESS, color: 'bg-amber-50 text-amber-700' },
+          { id: 'DONE', title: 'Done', tasks: tasksByStatus.DONE, color: 'bg-emerald-50 text-emerald-700' }
         ].map((column) => (
-          <div key={column.id} className="bg-slate-100/50 rounded-2xl p-4 min-h-[500px] border border-slate-200 flex flex-col">
+          <div key={column.id} className="soft-panel flex min-h-[500px] flex-col rounded-lg p-4">
             <div className="flex items-center justify-between mb-4 px-1">
-              <h3 className="font-bold text-slate-800 flex items-center text-sm uppercase tracking-wider">
+              <h3 className="flex items-center text-sm font-semibold uppercase tracking-wider text-foreground">
                 {column.title}
-                <span className={`ml-2 px-2 py-0.5 rounded-full text-xs font-bold ${column.color}`}>
+                <span className={`ml-2 rounded-full px-2 py-0.5 text-xs font-bold ${column.color}`}>
                   {column.tasks.length}
                 </span>
               </h3>
-              <Button variant="ghost" size="icon" className="h-6 w-6 text-slate-400">
-                <MoreHorizontal className="w-4 h-4" />
+              <Button variant="ghost" size="icon" className="size-7 text-muted-foreground">
+                <MoreHorizontal className="size-4" />
               </Button>
             </div>
 
             <div className="flex flex-col gap-3 flex-1 overflow-y-auto">
               {column.tasks.length === 0 ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 rounded-xl p-6 text-center">
+                <div className="flex flex-1 flex-col items-center justify-center rounded-lg border border-dashed border-border p-6 text-center text-muted-foreground">
                   <p className="text-sm font-medium">No tasks</p>
                 </div>
               ) : (
                 column.tasks.map((task) => (
-                  <div key={task._id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 hover:shadow-md hover:border-indigo-200 transition-all group">
+                  <div key={task._id} className="group rounded-lg border border-border bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5">
                     <div className="flex justify-between items-start mb-2">
                       <Badge variant="outline" className={`${getPriorityColor(task.priority)} font-bold text-[10px] uppercase border`}>
                         {task.priority}
@@ -394,7 +394,6 @@ export default function ProjectDetailsPage() {
                       <Select 
                         value={task.status} 
                         onValueChange={async (newStatus) => {
-                          const oldStatus = task.status;
                           try {
                             // Optimistic update
                             const updatedProject = { ...project };
@@ -415,7 +414,7 @@ export default function ProjectDetailsPage() {
                           }
                         }}
                       >
-                        <SelectTrigger className="w-[110px] h-6 text-[10px] uppercase font-bold tracking-wider rounded border-slate-200">
+                        <SelectTrigger className="h-6 w-[110px] rounded border-border text-[10px] font-bold uppercase tracking-wider">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -426,29 +425,29 @@ export default function ProjectDetailsPage() {
                       </Select>
                     </div>
                     
-                    <h4 className="font-bold text-slate-900 group-hover:text-indigo-700 transition-colors leading-tight mb-1.5 mt-2">{task.title}</h4>
+                    <h4 className="mb-1.5 mt-2 font-semibold leading-tight text-foreground">{task.title}</h4>
                     
                     {task.description && (
-                      <p className="text-xs text-slate-500 line-clamp-2 mb-4">{task.description}</p>
+                      <p className="mb-4 line-clamp-2 text-xs text-muted-foreground">{task.description}</p>
                     )}
 
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
+                    <div className="mt-4 flex items-center justify-between border-t border-border/70 pt-4">
                       {task.assignee ? (
                         <div className="flex items-center" title={task.assignee.name}>
-                          <div className="w-6 h-6 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px] font-bold">
+                          <div className="flex size-6 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
                             {task.assignee.name.charAt(0).toUpperCase()}
                           </div>
-                          <span className="text-xs font-medium text-slate-600 ml-2 truncate max-w-[100px]">{task.assignee.name}</span>
+                          <span className="ml-2 max-w-[100px] truncate text-xs font-medium text-muted-foreground">{task.assignee.name}</span>
                         </div>
                       ) : (
-                        <div className="flex items-center text-slate-400">
-                          <AlertCircle className="w-3.5 h-3.5 mr-1" />
+                        <div className="flex items-center text-muted-foreground">
+                          <AlertCircle className="mr-1 size-3.5" />
                           <span className="text-[10px] font-medium uppercase tracking-wider">Unassigned</span>
                         </div>
                       )}
                       
-                      <div className="flex items-center text-slate-400 text-xs">
-                        <Calendar className="w-3.5 h-3.5 mr-1" />
+                      <div className="flex items-center text-xs text-muted-foreground">
+                        <Calendar className="mr-1 size-3.5" />
                         {new Date(task.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                       </div>
                     </div>

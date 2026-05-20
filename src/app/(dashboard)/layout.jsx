@@ -4,7 +4,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import Link from "next/link";
-import { LayoutDashboard, FolderKanban, CheckSquare, LogOut, Loader2, Menu } from "lucide-react";
+import { LayoutDashboard, FolderKanban, CheckSquare, LogOut, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function DashboardLayout({ children }) {
@@ -20,8 +20,8 @@ export default function DashboardLayout({ children }) {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
@@ -35,34 +35,33 @@ export default function DashboardLayout({ children }) {
   ];
 
   return (
-    <div className="min-h-screen flex bg-slate-50/50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col">
-        <div className="h-16 flex items-center px-6 border-b border-slate-200">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center mr-3">
-            <CheckSquare className="w-5 h-5 text-white" />
+    <div className="min-h-screen flex bg-transparent">
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-72 border-r border-border/80 bg-background/80 px-4 py-5 backdrop-blur-2xl md:flex md:flex-col">
+        <div className="flex h-12 items-center px-2">
+          <div className="mr-3 flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
+            <CheckSquare className="size-5" />
           </div>
-          <span className="text-xl font-bold text-slate-900 tracking-tight">TeamFlow</span>
+          <div>
+            <span className="block text-lg font-semibold tracking-tight text-foreground">TeamFlow</span>
+            <span className="text-xs font-medium text-muted-foreground">Workspace</span>
+          </div>
         </div>
 
-        <div className="p-4 flex-1">
-          <p className="px-3 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4">
-            Menu
-          </p>
-          <nav className="space-y-1">
+        <div className="mt-8 flex-1">
+          <nav className="space-y-1.5">
             {navigation.map((item) => {
               const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                  className={`flex items-center rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-indigo-50 text-indigo-700"
-                      : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
                   }`}
                 >
-                  <item.icon className={`w-5 h-5 mr-3 ${isActive ? "text-indigo-600" : "text-slate-400"}`} />
+                  <item.icon className="mr-3 size-4" />
                   {item.name}
                 </Link>
               );
@@ -70,45 +69,67 @@ export default function DashboardLayout({ children }) {
           </nav>
         </div>
 
-        <div className="p-4 border-t border-slate-200">
-          <div className="flex items-center px-3 py-2 mb-4">
-            <div className="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center font-medium text-sm uppercase">
+        <div className="space-y-3 border-t border-border/80 pt-4">
+          <div className="rounded-lg border border-border/70 bg-card/70 p-3">
+            <div className="mb-3 flex items-center gap-2 text-xs font-medium text-muted-foreground">
+              <Sparkles className="size-3.5 text-chart-2" />
+              Focus mode ready
+            </div>
+            <div className="flex items-center">
+            <div className="flex size-9 items-center justify-center rounded-lg bg-foreground text-background text-sm font-semibold uppercase">
               {session?.user?.name?.charAt(0) || "U"}
             </div>
-            <div className="ml-3 truncate">
-              <p className="text-sm font-medium text-slate-900 truncate">{session?.user?.name}</p>
-              <p className="text-xs text-slate-500 truncate">{session?.user?.email}</p>
+            <div className="ml-3 min-w-0">
+              <p className="truncate text-sm font-semibold text-foreground">{session?.user?.name}</p>
+              <p className="truncate text-xs text-muted-foreground">{session?.user?.email}</p>
+            </div>
             </div>
           </div>
           <Button
             variant="ghost"
-            className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+            className="w-full justify-start text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
             onClick={() => signOut()}
           >
-            <LogOut className="w-5 h-5 mr-3" />
+            <LogOut className="mr-3 size-4" />
             Log out
           </Button>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Mobile header */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:hidden">
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden md:pl-72">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border/80 bg-background/85 px-4 backdrop-blur-xl md:hidden">
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center mr-3">
-              <CheckSquare className="w-5 h-5 text-white" />
+            <div className="mr-3 flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <CheckSquare className="size-4" />
             </div>
-            <span className="text-xl font-bold text-slate-900">TeamFlow</span>
+            <span className="text-lg font-semibold tracking-tight">TeamFlow</span>
           </div>
-          <Button variant="ghost" size="icon">
-            <Menu className="w-6 h-6 text-slate-600" />
+          <Button variant="ghost" size="icon" onClick={() => signOut()} aria-label="Log out">
+            <LogOut className="size-4 text-muted-foreground" />
           </Button>
         </header>
 
-        <div className="flex-1 overflow-auto p-4 md:p-8">
+        <div className="flex-1 overflow-auto px-4 py-6 pb-24 sm:px-6 md:px-10 md:py-8">
           {children}
         </div>
+
+        <nav className="fixed bottom-3 left-3 right-3 z-20 grid grid-cols-3 rounded-xl border border-border/80 bg-card/90 p-1 shadow-2xl backdrop-blur-xl md:hidden">
+          {navigation.map((item) => {
+            const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`flex h-11 items-center justify-center rounded-lg text-xs font-semibold transition-colors ${
+                  isActive ? "bg-primary text-primary-foreground" : "text-muted-foreground"
+                }`}
+              >
+                <item.icon className="mr-1.5 size-4" />
+                {item.name}
+              </Link>
+            );
+          })}
+        </nav>
       </main>
     </div>
   );

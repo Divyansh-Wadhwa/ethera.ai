@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Plus, FolderKanban, MoreVertical, Users } from "lucide-react";
+import { Loader2, Plus, FolderKanban, ArrowRight, Users } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ProjectsPage() {
@@ -31,6 +31,7 @@ export default function ProjectsPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProjects();
   }, []);
 
@@ -63,55 +64,55 @@ export default function ProjectsPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="mx-auto max-w-7xl space-y-7 animate-in fade-in slide-in-from-bottom-3 duration-500">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Projects</h1>
-          <p className="text-slate-500 mt-1 text-lg">Manage your team's projects and boards</p>
+          <h1 className="text-4xl font-semibold tracking-tight text-foreground">Projects</h1>
+          <p className="mt-2 text-muted-foreground">The places where your team turns intent into finished work.</p>
         </div>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger 
             render={
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md transition-all active:scale-95">
-                <Plus className="w-5 h-5 mr-2" />
+              <Button className="h-10 rounded-lg bg-primary px-4 text-primary-foreground shadow-sm transition-all active:scale-95">
+                <Plus className="mr-2 size-4" />
                 New Project
               </Button>
             }
           />
-          <DialogContent className="sm:max-w-[425px] rounded-2xl p-6">
+          <DialogContent className="sm:max-w-[425px] rounded-lg p-6">
             <DialogHeader>
-              <DialogTitle className="text-2xl font-bold text-slate-900">Create Project</DialogTitle>
+              <DialogTitle className="text-2xl font-semibold tracking-tight text-foreground">Create Project</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleCreateProject} className="space-y-6 mt-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="font-semibold text-slate-700">Project Name</Label>
+                <Label htmlFor="name" className="font-medium text-foreground">Project Name</Label>
                 <Input
                   id="name"
                   value={newProject.name}
                   onChange={(e) => setNewProject({ ...newProject, name: e.target.value })}
                   placeholder="e.g. Website Redesign"
                   required
-                  className="rounded-xl border-slate-200 focus:ring-indigo-500"
+                  className="rounded-lg border-border bg-background"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="description" className="font-semibold text-slate-700">Description (Optional)</Label>
+                <Label htmlFor="description" className="font-medium text-foreground">Description (Optional)</Label>
                 <Input
                   id="description"
                   value={newProject.description}
                   onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
                   placeholder="What is this project about?"
-                  className="rounded-xl border-slate-200 focus:ring-indigo-500"
+                  className="rounded-lg border-border bg-background"
                 />
               </div>
-              <Button type="submit" disabled={creating} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl py-6 text-lg font-semibold shadow-lg shadow-indigo-100">
+              <Button type="submit" disabled={creating} className="h-11 w-full rounded-lg bg-primary text-primary-foreground">
                 {creating ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : null}
                 {creating ? "Creating..." : "Create Project"}
               </Button>
@@ -121,63 +122,62 @@ export default function ProjectsPage() {
       </div>
 
       {projects.length === 0 ? (
-        <div className="text-center py-24 bg-white rounded-3xl border border-dashed border-slate-300">
-          <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <FolderKanban className="w-10 h-10 text-indigo-500" />
+        <div className="soft-panel rounded-lg border-dashed py-24 text-center">
+          <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-lg bg-muted">
+            <FolderKanban className="size-8 text-muted-foreground" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">No projects yet</h3>
-          <p className="text-slate-500 mb-6 max-w-sm mx-auto">Get started by creating a new project to organize your team's work.</p>
-          <Button onClick={() => setIsDialogOpen(true)} className="bg-indigo-600 hover:bg-indigo-700 rounded-xl">
+          <h3 className="mb-2 text-xl font-semibold text-foreground">No projects yet</h3>
+          <p className="mx-auto mb-6 max-w-sm text-muted-foreground">Create the first space for your team&apos;s work.</p>
+          <Button onClick={() => setIsDialogOpen(true)} className="rounded-lg bg-primary text-primary-foreground">
             Create your first project
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
           {projects.map((project) => (
-            <Link key={project._id} href={`/projects/${project._id}`}>
-              <Card className="border-0 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 bg-white cursor-pointer h-full flex flex-col group overflow-hidden">
-                <div className="h-2 w-full bg-gradient-to-r from-indigo-500 to-purple-500 opacity-80 group-hover:opacity-100 transition-opacity"></div>
-                <CardHeader className="pb-3 flex flex-row items-start justify-between">
+            <Link key={project._id} href={`/projects/${project._id}`} className="group">
+              <Card className="surface h-full cursor-pointer rounded-lg py-0 transition-all duration-200 hover:-translate-y-0.5">
+                <CardHeader className="flex flex-row items-start justify-between p-5 pb-3">
                   <div>
-                    <div className="flex items-center gap-2">
-                      <CardTitle className="text-xl font-bold text-slate-900 group-hover:text-indigo-700 transition-colors">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <CardTitle className="text-xl font-semibold tracking-tight text-foreground">
                         {project.name}
                       </CardTitle>
-                      <Badge className={`text-[10px] uppercase ${project.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-100' : 'bg-blue-100 text-blue-700 hover:bg-blue-100'}`}>
+                      <Badge variant="outline" className={`rounded-md text-[10px] uppercase ${project.status === 'COMPLETED' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-border bg-muted text-muted-foreground'}`}>
                         {project.status || 'ACTIVE'}
                       </Badge>
                     </div>
-                    <p className="text-sm text-slate-500 mt-1 line-clamp-2 min-h-[40px]">
+                    <p className="mt-2 min-h-[40px] line-clamp-2 text-sm leading-5 text-muted-foreground">
                       {project.description || "No description provided."}
                     </p>
                   </div>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 group-hover:text-slate-600 -mr-2 -mt-2">
-                    <MoreVertical className="w-4 h-4" />
+                  <Button variant="ghost" size="icon" className="-mr-2 -mt-2 size-8 text-muted-foreground">
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                   </Button>
                 </CardHeader>
-                <CardContent className="pb-4 flex-1">
-                  <div className="flex items-center text-sm text-slate-600 mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
-                    <div className="w-8 h-8 rounded-md bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold mr-3">
+                <CardContent className="flex-1 px-5 pb-5">
+                  <div className="mb-4 flex items-center rounded-lg border border-border/70 bg-muted/45 p-3 text-sm text-muted-foreground">
+                    <div className="mr-3 flex size-9 items-center justify-center rounded-md bg-background font-semibold text-foreground">
                       {project._count?.tasks || 0}
                     </div>
-                    <span className="font-medium">Total Tasks</span>
+                    <span className="font-medium">Tasks on board</span>
                   </div>
                 </CardContent>
-                <CardFooter className="pt-0 border-t border-slate-100 mt-auto bg-slate-50/50 flex justify-between items-center py-3">
+                <CardFooter className="mt-auto flex items-center justify-between rounded-b-lg border-t border-border/70 bg-muted/35 px-5 py-3">
                   <div className="flex -space-x-2">
                     {project.members.slice(0, 3).map((member, i) => (
-                      <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 border-2 border-white flex items-center justify-center text-white text-xs font-bold" title={member.user.name}>
+                      <div key={i} className="flex size-8 items-center justify-center rounded-full border-2 border-card bg-primary text-xs font-semibold text-primary-foreground" title={member.user.name}>
                         {member.user.name.charAt(0)}
                       </div>
                     ))}
                     {project.members.length > 3 && (
-                      <div className="w-8 h-8 rounded-full bg-slate-200 border-2 border-white flex items-center justify-center text-slate-600 text-xs font-bold">
+                      <div className="flex size-8 items-center justify-center rounded-full border-2 border-card bg-muted text-xs font-semibold text-muted-foreground">
                         +{project.members.length - 3}
                       </div>
                     )}
                   </div>
-                  <div className="text-xs font-medium text-slate-500 flex items-center">
-                    <Users className="w-3 h-3 mr-1" />
+                  <div className="flex items-center text-xs font-medium text-muted-foreground">
+                    <Users className="mr-1 size-3" />
                     {project.members.length} {project.members.length === 1 ? 'Member' : 'Members'}
                   </div>
                 </CardFooter>

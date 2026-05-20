@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FolderKanban, CheckSquare, Clock, Users, Loader2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { FolderKanban, CheckSquare, Clock, CheckCircle2, Loader2, ArrowUpRight } from "lucide-react";
 
 export default function DashboardOverview() {
   const { data: session } = useSession();
@@ -37,7 +37,7 @@ export default function DashboardOverview() {
           inProgressTasks: Math.floor(totalTasks * 0.5),
         });
       } catch (error) {
-        console.error("Failed to load dashboard data");
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -51,7 +51,7 @@ export default function DashboardOverview() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
@@ -61,82 +61,104 @@ export default function DashboardOverview() {
       title: "Active Projects",
       value: stats.totalProjects,
       icon: FolderKanban,
-      color: "text-blue-600",
-      bg: "bg-blue-100",
+      accent: "bg-chart-3",
       trend: "+2 this week",
     },
     {
       title: "Total Tasks",
       value: stats.totalTasks,
       icon: CheckSquare,
-      color: "text-indigo-600",
-      bg: "bg-indigo-100",
+      accent: "bg-chart-1",
       trend: "+12 this week",
     },
     {
       title: "In Progress",
       value: stats.inProgressTasks,
       icon: Clock,
-      color: "text-amber-600",
-      bg: "bg-amber-100",
+      accent: "bg-chart-2",
       trend: "4 near deadline",
     },
     {
       title: "Completed",
       value: stats.completedTasks,
-      icon: Users, // Using Users icon as a placeholder, could use CheckCircle
-      color: "text-emerald-600",
-      bg: "bg-emerald-100",
+      icon: CheckCircle2,
+      accent: "bg-chart-1",
       trend: "+8 this week",
     },
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Dashboard Overview</h1>
-        <p className="text-slate-500 mt-1 text-lg">Welcome back, {session?.user?.name}. Here's what's happening.</p>
+    <div className="mx-auto max-w-7xl space-y-7 animate-in fade-in slide-in-from-bottom-3 duration-500">
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-medium text-muted-foreground">Good to see you, {session?.user?.name}</p>
+        <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+          A quieter view of the work in motion.
+        </h1>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat, index) => (
-          <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow duration-200 bg-white overflow-hidden group">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-slate-500">{stat.title}</CardTitle>
-              <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center transform group-hover:scale-110 transition-transform duration-200`}>
-                <stat.icon className={`w-5 h-5 ${stat.color}`} />
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {statCards.map((stat) => (
+          <Card key={stat.title} className="surface rounded-lg py-0 transition-transform duration-200 hover:-translate-y-0.5">
+            <CardContent className="p-5">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                  <div className="mt-3 text-4xl font-semibold tracking-tight text-foreground">{stat.value}</div>
+                </div>
+                <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
+                  <stat.icon className="size-5 text-foreground" />
+                </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-slate-900">{stat.value}</div>
-              <p className="text-xs text-slate-500 mt-1 font-medium">{stat.trend}</p>
+              <div className="mt-5 flex items-center justify-between">
+                <span className="text-xs font-semibold text-muted-foreground">{stat.trend}</span>
+                <span className={`h-1.5 w-16 rounded-full ${stat.accent}`} />
+              </div>
             </CardContent>
-            {/* Decorative bottom border */}
-            <div className={`h-1 w-full bg-gradient-to-r from-transparent via-transparent to-transparent group-hover:from-${stat.color.split('-')[1]}-400 group-hover:to-${stat.color.split('-')[1]}-600 transition-all duration-500 opacity-50`}></div>
           </Card>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="col-span-2 border-0 shadow-sm bg-white min-h-[400px] flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
-              <FolderKanban className="w-10 h-10 text-slate-300" />
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1.45fr_0.85fr]">
+        <section className="surface rounded-lg p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">Flow health</h2>
+              <p className="text-sm text-muted-foreground">A simple read on current throughput.</p>
             </div>
-            <h3 className="text-lg font-semibold text-slate-900">Recent Activity</h3>
-            <p className="text-slate-500 mt-1">Activity chart will appear here</p>
+            <ArrowUpRight className="size-5 text-muted-foreground" />
           </div>
-        </Card>
+          <div className="mt-8 grid h-56 grid-cols-12 items-end gap-2">
+            {[38, 54, 42, 68, 50, 74, 62, 80, 58, 72, 88, 76].map((height, index) => (
+              <div key={index} className="flex h-full items-end rounded-md bg-muted/60">
+                <div className="w-full rounded-md bg-primary/80" style={{ height: `${height}%` }} />
+              </div>
+            ))}
+          </div>
+        </section>
         
-        <Card className="col-span-1 border-0 shadow-sm bg-white min-h-[400px] flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-slate-100">
-              <CheckSquare className="w-10 h-10 text-slate-300" />
-            </div>
-            <h3 className="text-lg font-semibold text-slate-900">Upcoming Tasks</h3>
-            <p className="text-slate-500 mt-1">Task list will appear here</p>
+        <section className="surface rounded-lg p-6">
+          <h2 className="text-lg font-semibold tracking-tight">Today</h2>
+          <div className="mt-5 space-y-3">
+            {[
+              ["Review", `${stats.inProgressTasks} tasks moving`],
+              ["Plan", `${stats.totalProjects} active projects`],
+              ["Ship", `${stats.completedTasks} completed tasks`],
+            ].map(([label, value]) => (
+              <div key={label} className="flex items-center justify-between rounded-lg border border-border/70 bg-background/60 px-4 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="size-2 rounded-full bg-chart-1" />
+                  <span className="text-sm font-medium text-foreground">{label}</span>
+                </div>
+                <span className="text-sm text-muted-foreground">{value}</span>
+              </div>
+            ))}
           </div>
-        </Card>
+          <div className="mt-6 rounded-lg bg-muted/70 p-4">
+            <p className="text-sm leading-6 text-muted-foreground">
+              Keep the board light: move stale work forward, close the obvious wins, and make blockers visible.
+            </p>
+          </div>
+        </section>
       </div>
     </div>
   );

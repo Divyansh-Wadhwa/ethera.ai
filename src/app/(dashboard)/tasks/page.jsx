@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Calendar, FolderKanban, Circle, CheckCircle2, Clock } from "lucide-react";
+import { Loader2, Calendar, FolderKanban, Circle, CheckCircle2, Clock, ListFilter } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 
@@ -26,6 +26,7 @@ export default function TasksPage() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchTasks();
   }, []);
 
@@ -49,68 +50,74 @@ export default function TasksPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full min-h-[400px]">
-        <Loader2 className="w-10 h-10 animate-spin text-indigo-600" />
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
       </div>
     );
   }
 
   const getPriorityBadge = (priority) => {
     switch(priority) {
-      case 'HIGH': return <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 font-semibold text-[10px] uppercase">High</Badge>;
-      case 'MEDIUM': return <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 font-semibold text-[10px] uppercase">Medium</Badge>;
-      case 'LOW': return <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200 font-semibold text-[10px] uppercase">Low</Badge>;
-      default: return <Badge variant="outline" className="bg-slate-50 text-slate-700 font-semibold text-[10px] uppercase">Normal</Badge>;
+      case 'HIGH': return <Badge variant="outline" className="rounded-md border-red-200 bg-red-50 text-[10px] font-semibold uppercase text-red-700">High</Badge>;
+      case 'MEDIUM': return <Badge variant="outline" className="rounded-md border-amber-200 bg-amber-50 text-[10px] font-semibold uppercase text-amber-700">Medium</Badge>;
+      case 'LOW': return <Badge variant="outline" className="rounded-md border-emerald-200 bg-emerald-50 text-[10px] font-semibold uppercase text-emerald-700">Low</Badge>;
+      default: return <Badge variant="outline" className="rounded-md bg-muted text-[10px] font-semibold uppercase text-muted-foreground">Normal</Badge>;
     }
   };
 
   const getStatusIcon = (status) => {
     switch(status) {
-      case 'TODO': return <Circle className="w-4 h-4 text-slate-300" />;
-      case 'IN_PROGRESS': return <Clock className="w-4 h-4 text-indigo-500" />;
-      case 'DONE': return <CheckCircle2 className="w-4 h-4 text-emerald-500" />;
-      default: return <Circle className="w-4 h-4 text-slate-300" />;
+      case 'TODO': return <Circle className="size-4 text-muted-foreground" />;
+      case 'IN_PROGRESS': return <Clock className="size-4 text-chart-2" />;
+      case 'DONE': return <CheckCircle2 className="size-4 text-emerald-600" />;
+      default: return <Circle className="size-4 text-muted-foreground" />;
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-12">
-      <div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">My Tasks</h1>
-        <p className="text-slate-500 mt-1 text-lg">A consolidated view of everything assigned to you</p>
+    <div className="mx-auto max-w-6xl space-y-7 animate-in fade-in slide-in-from-bottom-3 duration-500 pb-12">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-4xl font-semibold tracking-tight text-foreground">My Tasks</h1>
+          <p className="mt-2 text-muted-foreground">Everything assigned to you, stripped down to what matters.</p>
+        </div>
+        <div className="flex h-10 items-center gap-2 rounded-lg border border-border/80 bg-card px-3 text-sm text-muted-foreground">
+          <ListFilter className="size-4" />
+          {tasks.length} total
+        </div>
       </div>
 
       {tasks.length === 0 ? (
-        <div className="text-center py-24 bg-white rounded-2xl border border-dashed border-slate-300 shadow-sm">
-          <div className="w-16 h-16 bg-slate-50 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <CheckCircle2 className="w-8 h-8 text-slate-400" />
+        <div className="soft-panel rounded-lg border-dashed py-24 text-center">
+          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-lg bg-muted">
+            <CheckCircle2 className="size-8 text-muted-foreground" />
           </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">You're all caught up!</h3>
-          <p className="text-slate-500 max-w-sm mx-auto">You have no tasks assigned to you across any of your projects.</p>
+          <h3 className="mb-2 text-xl font-semibold text-foreground">You&apos;re all caught up</h3>
+          <p className="mx-auto max-w-sm text-muted-foreground">You have no tasks assigned across your projects.</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="divide-y divide-slate-100">
+        <div className="surface overflow-hidden rounded-lg">
+          <div className="divide-y divide-border/70">
             {tasks.map((task) => (
-              <div key={task._id} className="p-5 hover:bg-slate-50/50 transition-colors group flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-4">
-                  <div className="flex items-center gap-3 w-full sm:w-1/3">
+              <div key={task._id} className="group flex flex-col gap-4 p-4 transition-colors hover:bg-muted/35 sm:flex-row sm:items-center">
+                <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center">
+                  <div className="flex w-full items-center gap-3 sm:w-1/3">
                     {getStatusIcon(task.status)}
-                    <span className="font-semibold text-slate-900 line-clamp-1">{task.title}</span>
+                    <span className="line-clamp-1 font-semibold text-foreground">{task.title}</span>
                   </div>
                   
-                  <div className="flex-1 flex items-center gap-6 text-sm text-slate-500 pl-7 sm:pl-0">
-                    <Link href={`/projects/${task.project._id}`} className="flex items-center hover:text-indigo-600 transition-colors">
-                      <FolderKanban className="w-4 h-4 mr-2" />
+                  <div className="flex flex-1 items-center gap-6 pl-7 text-sm text-muted-foreground sm:pl-0">
+                    <Link href={`/projects/${task.project._id}`} className="flex items-center transition-colors hover:text-foreground">
+                      <FolderKanban className="mr-2 size-4" />
                       <span className="line-clamp-1">{task.project.name}</span>
                     </Link>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 pl-7 sm:pl-0 sm:justify-end">
+                <div className="flex items-center gap-3 pl-7 sm:justify-end sm:pl-0">
                   {getPriorityBadge(task.priority)}
                   
                   <Select value={task.status} onValueChange={(v) => handleStatusChange(task._id, v)}>
-                    <SelectTrigger className="w-[130px] h-8 text-xs font-medium rounded-lg">
+                    <SelectTrigger className="h-8 w-[130px] rounded-lg text-xs font-medium">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -120,8 +127,8 @@ export default function TasksPage() {
                     </SelectContent>
                   </Select>
                   
-                  <div className="flex items-center text-xs text-slate-400 min-w-[100px] justify-end">
-                    <Calendar className="w-3.5 h-3.5 mr-1.5" />
+                  <div className="flex min-w-[92px] items-center justify-end text-xs text-muted-foreground">
+                    <Calendar className="mr-1.5 size-3.5" />
                     {new Date(task.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                   </div>
                 </div>
